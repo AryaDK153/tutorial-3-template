@@ -20,7 +20,32 @@ Aturan:
 - Dash terjadi ketika pemain menekan tombol kanan/kiri dua kali dalam waktu singkat
 > Memanfaatkan delta sebagai timer, serta mengatur click count dan flag sebagai tanda gagal atau berhasil melakukan dash
 ### Crouching
+
+Aturan:
+- Ketika di platform dan tidak berlari (dashing), pemain bisa bergerak lebih pelan ke arah kanan/kiri ketika menekan tombol bawah
+> Dengan menggunakan dash flag dan is_on_floor, kita dapat mendeteksi kondisi pemain dan mengurangi kecepatan geraknya ketika menekan tombol bawah
 ### Sliding
+
+Aturan:
+- Ketika dashing di platform, pemain bisa menekan tombol bawah dan melakukan sliding
+> Dengan menggunakan dash flag dan is_on_floor, kita dapat mendeteksi kondisi pemain dan mengurangi kecepatan geraknya ketika menekan tombol bawah
+- Sliding memiliki batasan, dimana gerakan pemain akan semakin lambat hingga berhenti
+> Kecepatan gerak berkurang secara perlahan, digunakan variable dynamic speed yang dapat kita ubah kapanpun agar tidak langsung mengubah speed tiap frame
+
+> Kita tambahkan juga variable friction (gesekan) untuk menentukan seberapa cepat kita ingin pemain melambat, tiap frame, dynamic speed akan berkurang hingga pemain melepas tombol bawah, setelah itu kembalikan dynamic speed ke semula (=speed)
 ### Plunging
+
+Aturan:
+- Tidak dapat dibatalkan
+> Gunakan Input.is_action_just_pressed()
+- Hanya saat di udara
+> Tambahkan kondisi "not is_on_floor"
 ## Extra
 ### Respawn
+
+Agar tidak perlu reload game tiap jatuh dari platform dan objek pemain hilang
+Aturan:
+- Ketika pemain jatuh di luar area main, pindahkan objek pemain kembali ke titik hidup (spawnpoint)
+> ubah posisi objek ke spawnpoint ketika melewati batas bawah area main (gunakan OS.get_window_size().y)
+- Spawnpoint sesuai titik hidup awal load game
+> pada _ready(), simpan titik posisi pemain dalam variable spawnpoint
