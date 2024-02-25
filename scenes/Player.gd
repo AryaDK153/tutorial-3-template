@@ -21,6 +21,9 @@ var left_count = 0
 var dash_flag = false
 var plunge_flag = false
 
+var preload_idle = preload("res://assets/assets_temp_dk/char-temp-default-down-pos.png")
+var preload_side = preload("res://assets/assets_temp_dk/char-temp-default-pos.png")
+
 func jump():
 	if is_on_floor():
 		jump_count = 0
@@ -32,7 +35,8 @@ func jump():
 
 func move_right():
 	if Input.is_action_pressed("right"):
-		print(right_count)
+		$Sprite.texture = preload_side
+		$Sprite.flip_h = false
 		velocity.x = dynamic_speed
 		if doubletap_timer >= 0 and right_count == 2:
 			dash_flag = true
@@ -50,7 +54,8 @@ func move_right():
 
 func move_left():
 	if Input.is_action_pressed("left"):
-		print(right_count)
+		$Sprite.texture = preload_side
+		$Sprite.flip_h = true
 		velocity.x = -dynamic_speed
 		if doubletap_timer >= 0 and left_count == 2:
 			dash_flag = true
@@ -95,6 +100,15 @@ func respawn_mechanic():
 		plunge_flag = false
 		velocity.y = 0
 
+func reset():
+	if doubletap_timer < 0:
+		right_count = 0
+		left_count = 0
+	
+	# sprites
+	if Input.is_action_just_released("right") or Input.is_action_just_released("left"):
+		$Sprite.texture = preload_idle
+
 func get_input():
 	jump()
 	move_right()
@@ -103,9 +117,7 @@ func get_input():
 	crouch()
 	slide()
 	plunge()
-	if doubletap_timer < 0:
-		right_count = 0
-		left_count = 0
+	reset()
 
 func _ready():
 	spawnpoint = position
