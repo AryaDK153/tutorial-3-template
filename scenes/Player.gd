@@ -28,15 +28,19 @@ func jump():
 	if is_on_floor():
 		jump_count = 0
 	if is_on_floor() and Input.is_action_just_pressed("up"):
+		$AnimatedSprite.play("lompat_kanan")
+		$Bounce.play()
 		velocity.y = jump_speed
 	elif not is_on_floor() and jump_count == 0 and Input.is_action_just_pressed("up"):
 		velocity.y = jump_speed*4/5	# less strong jump for doublejump
+		$Bounce.play()
 		jump_count = 1
 
 func move_right():
 	if Input.is_action_pressed("right"):
-		$Sprite.texture = preload_side
-		$Sprite.flip_h = false
+		if is_on_floor():
+			$AnimatedSprite.play("jalan_kanan")
+		$AnimatedSprite.flip_h = false
 		velocity.x = dynamic_speed
 		if doubletap_timer >= 0 and right_count == 2:
 			dash_flag = true
@@ -54,8 +58,9 @@ func move_right():
 
 func move_left():
 	if Input.is_action_pressed("left"):
-		$Sprite.texture = preload_side
-		$Sprite.flip_h = true
+		if is_on_floor():
+			$AnimatedSprite.play("jalan_kanan")
+		$AnimatedSprite.flip_h = true
 		velocity.x = -dynamic_speed
 		if doubletap_timer >= 0 and left_count == 2:
 			dash_flag = true
@@ -100,6 +105,14 @@ func respawn_mechanic():
 		plunge_flag = false
 		velocity.y = 0
 
+func attack():
+	if Input.is_action_just_pressed("ui_accept"):
+		if $AnimatedSprite.flip_h and $Spawner.scale.x > 0:
+			$Spawner.scale.x *= -1
+		elif not $AnimatedSprite.flip_h and $Spawner.scale.x < 0:
+			$Spawner.scale.x *= -1
+		$Spawner.spawn()
+
 func reset():
 	if doubletap_timer < 0:
 		right_count = 0
@@ -107,7 +120,7 @@ func reset():
 	
 	# sprites
 	if Input.is_action_just_released("right") or Input.is_action_just_released("left"):
-		$Sprite.texture = preload_idle
+		$AnimatedSprite.play("diri_kanan")
 
 func get_input():
 	jump()
@@ -117,6 +130,7 @@ func get_input():
 	crouch()
 	slide()
 	plunge()
+	attack()
 	reset()
 
 func _ready():
